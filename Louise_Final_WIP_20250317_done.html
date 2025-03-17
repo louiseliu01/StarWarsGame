@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!--
+	NOTES:
+	1. All tokens are represented by '$' sign in the template.
+	2. You can write your code only wherever mentioned.
+	3. All occurrences of existing tokens will be replaced by their appropriate values.
+	4. Blank lines will be removed automatically.
+	5. Remove unnecessary comments before creating your template.
+-->
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="authoring-tool" content="Adobe_Animate_CC">
+<title>Louise_Final_WIP_20250317_done</title>
+<!-- write your code here -->
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<script src="Louise_Final_WIP_20250317_done.js"></script>
+<script>
+// Global Scripts
+	//PLAYER
+var player;
+var ground;
+var jumpSpeed;
+var gravity;
+var speedY;
+var playerWidth;
+var playerHeight;
+var initialY;
+var spacePressTime;
+var hitPoint = 100;
+var milkPoint = 200;
+var groundXReset = 1185;
+var groundXMin = 0;
+var groundXSpeed = 20;
+// RANDOMNESS
+function randomNumber(min, max) {
+	if (min > max) {
+		var swapTemp = min;
+		min = max;
+		max = swapTemp;
+	}
+	var randomNum = (Math.random() * (max - min)) + min;
+	return randomNum;
+}
+function randomInteger(min, max) {
+	if (min > max) {
+		var swapTemp = min;
+		min = max;
+		max = swapTemp;
+	}
+	var randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
+	return randomInt;
+}
+//End of Randomness
+// HITTESTS
+function hitTestPoint(player, globalX, globalY) {
+	// scale the global coordinates to match the stage size
+	globalX *= stage.scaleX;
+	globalY *= stage.scaleY;
+	var localPt = player.globalToLocal(globalX, globalY);
+	return player.hitTest(localPt.x, localPt.y);
+}
+//KEYBOARD
+var spacePress = false;
+var xPress = false
+//SCORE
+var score;
+var highestScore = 0;
+function updateScore(){
+	exportRoot.scoreTxt.text = score;
+}
+function updateFinalScore(){
+	exportRoot.gameOverMsg.finalScoreTxt.text = score;
+}
+function updateHighestScore(){
+	if (score < highestScore){
+		highestScore = highestScore;
+	}
+	if (score >= highestScore){
+		highestScore = score;
+	}
+	exportRoot.gameOverMsg.HighestScoreTxt.text = highestScore;
+}
+//HEALTH
+var health;//current health
+var healthMax = 100;//max health
+/*
+function updateHealth(){
+	if (health <= 0){
+		health = 0;
+	}
+	exportRoot.health.fill.
+}*/
+//JUMP
+var jumping = false;
+//GET PLAYER SIZE
+function getPlayerSize() {
+	playerWidth = player.nominalBounds.width * player.scaleX;
+	playerHeight = player.nominalBounds.height * player.scaleY;
+}
+// STAGE
+var stageWidth;
+var stageHeight;
+function getStageSize() {
+	stageWidth = stage.canvas.width / stage.scaleX;
+	stageHeight = stage.canvas.height / stage.scaleY;
+}
+//SOUND
+function playSnd(soundSourceAsString, volumeBetweenZeroAndOne = 1, offsetInMilliseconds = 0) {
+	createjs.Sound.play(soundSourceAsString, {volume:volumeBetweenZeroAndOne, offset:offsetInMilliseconds});
+}</script>
+<script>
+var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
+function init() {
+	canvas = document.getElementById("canvas");
+	anim_container = document.getElementById("animation_container");
+	dom_overlay_container = document.getElementById("dom_overlay_container");
+	var comp=AdobeAn.getComposition("20337020040A4461A6A813DDE62C330B");
+	var lib=comp.getLibrary();
+	var loader = new createjs.LoadQueue(false);
+	loader.installPlugin(createjs.Sound);
+	loader.addEventListener("fileload", function(evt){handleFileLoad(evt,comp)});
+	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+	var lib=comp.getLibrary();
+	loader.loadManifest(lib.properties.manifest);
+}
+function handleFileLoad(evt, comp) {
+	var images=comp.getImages();	
+	if (evt && (evt.item.type == "image")) { images[evt.item.id] = evt.result; }	
+}
+function handleComplete(evt,comp) {
+	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
+	var lib=comp.getLibrary();
+	var ss=comp.getSpriteSheet();
+	var queue = evt.target;
+	var ssMetadata = lib.ssMetadata;
+	for(i=0; i<ssMetadata.length; i++) {
+		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+	}
+	exportRoot = new lib.Louise_Final_WIP_20250317_1430_done();
+	stage = new lib.Stage(canvas);
+	stage.enableMouseOver();	
+	//Registers the "tick" event listener.
+	fnStartAnimation = function() {
+		stage.addChild(exportRoot);
+		createjs.Ticker.framerate = lib.properties.fps;
+		createjs.Ticker.addEventListener("tick", stage);
+	}	    
+	//Code to support hidpi screens and responsive scaling.
+	AdobeAn.makeResponsive(true,'both',true,1,[canvas,anim_container,dom_overlay_container]);	
+	AdobeAn.compositionLoaded(lib.properties.id);
+	fnStartAnimation();
+}
+function playSound(id, loop, offset) {
+	return createjs.Sound.play(id, {'interrupt':createjs.Sound.INTERRUPT_EARLY, 'loop': loop, 'offset': offset});}
+</script>
+<!-- write your code here -->
+</head>
+<body onload="init();" style="margin:0px;">
+	<div id="animation_container" style="background-color:rgba(152, 154, 160, 1.00); width:1024px; height:360px">
+		<canvas id="canvas" width="1024" height="360" style="position: absolute; display: block; background-color:rgba(152, 154, 160, 1.00);"></canvas>
+		<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; width:1024px; height:360px; position: absolute; left: 0px; top: 0px; display: block;">
+		</div>
+	</div>
+</body>
+</html>
